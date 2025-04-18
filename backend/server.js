@@ -15,7 +15,10 @@ app.use(cookieParser());
 app.use('/auth', authRoutes);
 
 app.get('/protected', checkAuth, (req, res) => {
-  res.json({ message: 'You are authorized!', user: req.user });
+  res.json({
+    message: 'You are authorized',
+    user: req.user,
+  });
 });
 
 

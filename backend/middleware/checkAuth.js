@@ -4,6 +4,10 @@ const { supabase } = require('../supabaseClient');
 const checkAuth = async (req, res, next) => {
   const cookies = cookie.parse(req.headers.cookie || '');
   const token = cookies['sb-access-token'];
+
+  console.log('== Incoming Request to /protected ==');
+  console.log('[Parsed Cookie]', cookies);
+  console.log('[Access Token]', token);
   if (!token) return res.status(401).json({ error: 'No token' });
 
   const { data: userSession, error } = await supabase.auth.getUser(token);
