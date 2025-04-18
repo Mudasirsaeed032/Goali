@@ -2,19 +2,26 @@ const express = require('express');
 const router = express.Router();
 const { supabase } = require('../supabaseClient');
 const cookie = require('cookie');
+require('dotenv').config();
 
 
-router.post('/register-user', async(req, res)=>{
-  const {id, full_name, role} = req.body;
-  const {data, error} = await supabase
-  .from('users')
-  .insert([
-    { id, full_name, role }
-  ])
+router.post('/register-user', async (req, res) => {
+  const { id, full_name, role } = req.body;
+  console.log('[Register User Request]', { id, full_name, role });
 
-  if(error) return res.status(500).json({error: error.message});
-  res.json({message: "User Profile Created"});
+  const { data, error } = await supabase
+    .from('users') // if you're using 'profiles', replace this
+    .insert([{ id, full_name, role }]);
+
+  if (error) {
+    console.error('[Register User Error]', error.message);
+    return res.status(500).json({ error: error.message });
+  }
+
+  res.json({ message: 'User registered successfully' });
 });
+
+
 
 // POST /auth/login
 router.post('/login', async (req, res) => {

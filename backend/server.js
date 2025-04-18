@@ -4,6 +4,7 @@ const cors = require("cors");
 const authRoutes = require('./routes/auth');
 const cookieParser = require('cookie-parser');
 const checkAuth = require('./middleware/checkAuth');
+const requireAdmin = require('./middleware/requireAdmin');
 
 const app = express();
 
@@ -15,6 +16,11 @@ app.use('/auth', authRoutes);
 
 app.get('/protected', checkAuth, (req, res) => {
   res.json({ message: 'You are authorized!', user: req.user });
+});
+
+
+app.get('/admin/stats', checkAuth, requireAdmin, (req, res) => {
+  res.json({ message: `Welcome Admin ${req.user.full_name}` });
 });
 
 app.get('/api/ping', (req, res)=>{
