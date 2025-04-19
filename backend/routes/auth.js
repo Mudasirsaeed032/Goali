@@ -3,6 +3,8 @@ const router = express.Router();
 const { supabase } = require('../supabaseClient');
 const cookie = require('cookie');
 require('dotenv').config();
+const checkAuth = require('../middleware/checkAuth');
+const requireAdmin = require('../middleware/requireAdmin');
 
 
 router.post('/register-user', async (req, res) => {
@@ -11,7 +13,7 @@ router.post('/register-user', async (req, res) => {
 
   const { data, error } = await supabase
     .from('users') // if you're using 'profiles', replace this
-    .insert([{ id, full_name, role }]);
+    .upsert([{ id, full_name, role }], { onConflict: 'id' });
 
   if (error) {
     console.error('[Register User Error]', error.message);
@@ -54,6 +56,19 @@ router.post('/login', async (req, res) => {
   );
 
   res.json({ message: 'Logged in successfully' });
+});
+
+router.post('/make-admin', checkAuth, requireAdmin, async (req, res) => {
+  const { user_id } = req.body;
+
+  const { error } = await supabase
+    .from('users')
+    .update({ role: 'admin' })
+    .eq('id', user_id);
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  res.json({ message: 'User promoted to admin' });
 });
 
 
