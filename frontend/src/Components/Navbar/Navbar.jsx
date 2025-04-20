@@ -31,7 +31,6 @@ function Navbar({ user, setUser }) {
     navigate("/login")
   }
 
-  // Get user initials for avatar fallback
   const getUserInitials = () => {
     if (!user?.full_name) return "U"
     return user.full_name
@@ -42,8 +41,8 @@ function Navbar({ user, setUser }) {
   }
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-14 items-center">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
         {/* Mobile Navigation */}
         <Sheet>
           <SheetTrigger asChild>
@@ -52,45 +51,45 @@ function Navbar({ user, setUser }) {
               <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-[240px] sm:w-[300px]">
-            <nav className="flex flex-col gap-4 mt-6">
-              <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
+          <SheetContent side="left" className="w-64 p-6">
+            <nav className="flex flex-col gap-4">
+              <Link to="/" className="flex items-center gap-2 text-lg font-medium">
                 <Home className="h-5 w-5" />
                 Home
               </Link>
-              <Link to="/fundraisers" className="flex items-center gap-2 text-lg font-semibold">
+              <Link to="/fundraisers" className="flex items-center gap-2 text-lg font-medium">
                 <DollarSign className="h-5 w-5" />
                 Fundraisers
               </Link>
               {user?.role === "admin" && (
-                <Link to="/makeadmin" className="flex items-center gap-2 text-lg font-semibold">
+                <Link to="/makeadmin" className="flex items-center gap-2 text-lg font-medium">
                   <ShieldCheck className="h-5 w-5" />
                   Make Admin
                 </Link>
               )}
-              <div className="mt-4 pt-4 border-t">
+              <div className="border-t pt-4 mt-4">
                 {user ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2">
+                  <>
+                    <div className="flex items-center gap-3 mb-3">
                       <Avatar className="h-8 w-8">
                         <AvatarFallback>{getUserInitials()}</AvatarFallback>
                       </Avatar>
-                      <span className="font-medium">{user.full_name}</span>
+                      <span>{user.full_name}</span>
                     </div>
-                    <Button variant="destructive" size="sm" onClick={handleLogout} className="w-full">
+                    <Button variant="destructive" onClick={handleLogout} className="w-full">
                       <LogOut className="h-4 w-4 mr-2" />
                       Logout
                     </Button>
-                  </div>
+                  </>
                 ) : (
-                  <div className="flex flex-col gap-2">
-                    <Button variant="outline" onClick={() => navigate("/login")} className="w-full justify-start">
+                  <>
+                    <Button variant="outline" onClick={() => navigate("/login")} className="w-full">
                       Login
                     </Button>
-                    <Button onClick={() => navigate("/signup")} className="w-full justify-start">
+                    <Button onClick={() => navigate("/signup")} className="w-full">
                       Sign Up
                     </Button>
-                  </div>
+                  </>
                 )}
               </div>
             </nav>
@@ -98,12 +97,12 @@ function Navbar({ user, setUser }) {
         </Sheet>
 
         {/* Desktop Navigation */}
-        <div className="mr-4 hidden md:flex">
+        <div className="hidden md:flex gap-6 items-center">
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
                 <Link to="/">
-                  <NavigationMenuLink className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
+                  <NavigationMenuLink className="nav-link">
                     <Home className="mr-2 h-4 w-4" />
                     Home
                   </NavigationMenuLink>
@@ -111,7 +110,7 @@ function Navbar({ user, setUser }) {
               </NavigationMenuItem>
               <NavigationMenuItem>
                 <Link to="/fundraisers">
-                  <NavigationMenuLink className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
+                  <NavigationMenuLink className="nav-link">
                     <DollarSign className="mr-2 h-4 w-4" />
                     Fundraisers
                   </NavigationMenuLink>
@@ -120,7 +119,7 @@ function Navbar({ user, setUser }) {
               {user?.role === "admin" && (
                 <NavigationMenuItem>
                   <Link to="/makeadmin">
-                    <NavigationMenuLink className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
+                    <NavigationMenuLink className="nav-link">
                       <ShieldCheck className="mr-2 h-4 w-4" />
                       Make Admin
                     </NavigationMenuLink>
@@ -131,39 +130,39 @@ function Navbar({ user, setUser }) {
           </NavigationMenu>
         </div>
 
-        <div className="ml-auto flex items-center gap-2">
+        {/* Auth Controls */}
+        <div className="flex items-center gap-2">
           {user ? (
-            <div className="flex items-center gap-4">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                    <Avatar className="h-8 w-8">
-                      <AvatarFallback>{getUserInitials()}</AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.full_name}</p>
-                      {user.email && <p className="text-xs leading-none text-muted-foreground">{user.email}</p>}
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <Avatar className="h-8 w-8">
+                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium">{user.full_name}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  className="text-destructive focus:text-destructive"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           ) : (
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" onClick={() => navigate("/login")}>
-                Login
-              </Button>
+            <>
+              <Button variant="ghost" onClick={() => navigate("/login")}>Login</Button>
               <Button onClick={() => navigate("/signup")}>Sign Up</Button>
-            </div>
+            </>
           )}
         </div>
       </div>
