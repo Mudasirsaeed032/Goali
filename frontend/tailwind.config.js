@@ -1,17 +1,12 @@
-module.exports = {
+/** @type {import('tailwindcss').Config} */
+export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}"
+    "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
-    extend: {
-      animation: {
-        // for shadcn/ui components
-        accordion: 'accordion-down 0.2s ease-out',
-      },
-    },
+    extend: {},
   },
-  plugins: [
-    require("tailwindcss-animate")
-  ],
+  plugins: [],
+  darkMode: 'class'
 }
