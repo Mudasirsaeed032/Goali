@@ -7,6 +7,7 @@ function Home() {
   useEffect(() => {
     axios.get('http://localhost:5000/protected', {
       withCredentials: true, // 👈 This is required!
+      headers: {'Cache-Control': 'no-cache'}
     })
       .then(res => {
         setUser(res.data.user);

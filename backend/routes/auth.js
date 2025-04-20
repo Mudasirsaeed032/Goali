@@ -60,16 +60,25 @@ router.post('/login', async (req, res) => {
 
 router.post('/make-admin', checkAuth, requireAdmin, async (req, res) => {
   const { user_id } = req.body;
+  console.log('[Make Admin] Target user ID:', user_id);
 
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from('users')
     .update({ role: 'admin' })
-    .eq('id', user_id);
+    .eq('id', user_id)
+    .select(); // ✅ this forces Supabase to return the updated row
 
-  if (error) return res.status(500).json({ error: error.message });
+  if (error) {
+    console.error('[Make Admin Error]', error.message);
+    return res.status(500).json({ error: error.message });
+  }
 
-  res.json({ message: 'User promoted to admin' });
+  console.log('[Make Admin Updated]', data);  // empty array
+  console.log('[Make Admin Error]', error);  // likely null
+
+  res.json({ message: 'User promoted to admin', data });
 });
+
 
 
 // POST /auth/logout
