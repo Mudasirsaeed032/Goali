@@ -1,19 +1,21 @@
 require('dotenv').config();
 const express = require("express");
 const cors = require("cors");
-const authRoutes = require('./routes/auth');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 
 
 const checkAuth = require('./middleware/checkAuth');
 const requireAdmin = require('./middleware/requireAdmin');
+const fundraisersRoute = require('./routes/fundraisers');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
 app.use(cors({ origin: "http://localhost:5173", credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
+app.use('/fundraisers', fundraisersRoute)
 
 app.use('/auth', authRoutes);
 
