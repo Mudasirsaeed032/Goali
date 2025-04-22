@@ -1,5 +1,7 @@
 import './App.css';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Login from './Components/Login/Login';
 import Signup from './Components/Signup/Signup';
 import Home from './Components/Home/Home';
@@ -9,16 +11,25 @@ import Navbar from './Components/Navbar/Navbar';
 import CreateFundraiser from './Components/Fundraiser/CreateFundraiser';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    axios.get('http://localhost:5000/protected', { withCredentials: true })
+      .then((res) => setUser(res.data.user))
+      .catch(() => navigate('/login'));
+  }, []);
+
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="fundraisers" element={<h1>Fundraisers Page</h1>} />
-        <Route path="login" element={<Login />} />
+        <Route path="login" element={<Login setUser={setUser} />} />
         <Route path="signup" element={<Signup />} />
         <Route path="makeadmin" element={<MakeAdmin />} />
         <Route path="navbar" element={<Navbar />} />
-        <Route path="fundraisers/create" element={<CreateFundraiser />} />
+        <Route path="fundraisers/create" element={user ? <CreateFundraiser user={user} /> : <Login />} />
       </Route>
     </Routes>
   );
