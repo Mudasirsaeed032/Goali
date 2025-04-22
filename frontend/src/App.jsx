@@ -9,6 +9,7 @@ import MakeAdmin from './Components/MakeAdmin/MakeAdmin';
 import Layout from './Components/Layout/Layout';
 import Navbar from './Components/Navbar/Navbar';
 import CreateFundraiser from './Components/Fundraiser/CreateFundraiser';
+import FundraiserList from './Components/Fundraiser/FundraiserList';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -24,7 +25,7 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="fundraisers" element={<h1>Fundraisers Page</h1>} />
+        <Route path="fundraisers" element={<FundraiserList/>} />
         <Route path="login" element={<Login setUser={setUser} />} />
         <Route path="signup" element={<Signup />} />
         <Route path="makeadmin" element={<MakeAdmin />} />
