@@ -6,6 +6,7 @@ import Home from './Components/Home/Home';
 import MakeAdmin from './Components/MakeAdmin/MakeAdmin';
 import Layout from './Components/Layout/Layout';
 import Navbar from './Components/Navbar/Navbar';
+import CreateFundraiser from './Components/Fundraiser/CreateFundraiser';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="signup" element={<Signup />} />
         <Route path="makeadmin" element={<MakeAdmin />} />
         <Route path="navbar" element={<Navbar />} />
+        <Route path="fundraisers/create" element={<CreateFundraiser />} />
       </Route>
     </Routes>
   );

@@ -3,6 +3,9 @@ const express = require("express");
 const cors = require("cors");
 const authRoutes = require('./routes/auth');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
+
+
 const checkAuth = require('./middleware/checkAuth');
 const requireAdmin = require('./middleware/requireAdmin');
 
