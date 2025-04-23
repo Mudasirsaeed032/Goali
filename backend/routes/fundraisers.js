@@ -4,6 +4,27 @@ const checkAuth = require('../middleware/checkAuth');
 
 const router = express.Router();
 
+// GET /fundraisers (with optional search/filter)
+router.get('/', async (req, res) => {
+    const { search } = req.query; // Get the search term from the query params
+  
+    // Construct the query to filter by title (or any other field)
+    let query = supabase.from('fundraisers').select('*');
+  
+    if (search) {
+      query = query.ilike('title', `%${search}%`); // Case-insensitive search on 'title'
+    }
+  
+    const { data, error } = await query;
+  
+    if (error) {
+      return res.status(500).json({ error: error.message });
+    }
+  
+    res.status(200).json(data);
+  });
+  
+
 router.post('/', checkAuth, async (req, res) => {
     const { title, description, image_url } = req.body;
     const userId = req.user.id;
