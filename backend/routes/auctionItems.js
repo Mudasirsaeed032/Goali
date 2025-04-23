@@ -1,7 +1,6 @@
-import express from 'express';
-import { supabase } from '../supabaseClient'; // Assuming you are using Supabase client
+const express = require('express');
 const {supabase} = require('../supabaseClient');
-import checkAuth from '../middleware/checkAuth';
+const checkAuth = require('../middleware/checkAuth')
 
 const router = express.Router();
 
