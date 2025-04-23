@@ -10,6 +10,7 @@ import Layout from './Components/Layout/Layout';
 import Navbar from './Components/Navbar/Navbar';
 import CreateFundraiser from './Components/Fundraiser/CreateFundraiser';
 import FundraiserList from './Components/Fundraiser/FundraiserList';
+import CreateAuctionItem from './Components/AuctionItem/CreateAuctionItem';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -31,6 +32,7 @@ function App() {
         <Route path="makeadmin" element={<MakeAdmin />} />
         <Route path="navbar" element={<Navbar />} />
         <Route path="fundraisers/create" element={user ? <CreateFundraiser user={user} /> : <Login />} />
+        <Route path="auction/create" element={<CreateAuctionItem />} />
       </Route>
     </Routes>
   );
