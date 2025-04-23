@@ -9,6 +9,7 @@ const checkAuth = require('./middleware/checkAuth');
 const requireAdmin = require('./middleware/requireAdmin');
 const fundraisersRoute = require('./routes/fundraisers');
 const authRoutes = require('./routes/auth');
+const auctionRoutes = require('./routes/auctionItems');
 
 const app = express();
 

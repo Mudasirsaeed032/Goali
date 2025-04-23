@@ -10,17 +10,17 @@ function CreateAuctionItem({ user }) {
   // Handle Image Upload to Cloudinary
   const handleImageUpload = async (file) => {
     const formData = new FormData();
-    formData.append("file", file);
+    formData.append('file', file);
     formData.append("upload_preset", "unsigned-goali");
-    const cloudName = "your-cloud-name"; // Replace with your Cloudinary cloud name
+    const cloudName = "dgvc3mvc5";
 
     const response = await axios.post(
-      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-      formData
-    );
+        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
+        , formData)
 
     return response.data.secure_url;
-  };
+
+}
 
   // Form Submission Handler
   const onSubmit = async (data) => {

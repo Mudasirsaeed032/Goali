@@ -16,12 +16,12 @@ function CreateFundraiser({ user }) {
     const cloudName = "dgvc3mvc5";
 
     const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
-        , formData)
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
+      , formData)
 
     return response.data.secure_url;
 
-}
+  }
 
   // Form Submission Handler
   const onSubmit = async (data) => {

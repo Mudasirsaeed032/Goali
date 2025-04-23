@@ -27,4 +27,4 @@ router.post('/', checkAuth, async (req, res) => {
   res.status(201).json(data);
 });
 
-export default router;
+module.exports = router;
