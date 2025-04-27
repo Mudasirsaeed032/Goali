@@ -32,7 +32,7 @@ function App() {
         <Route path="makeadmin" element={<MakeAdmin />} />
         <Route path="navbar" element={<Navbar />} />
         <Route path="fundraisers/create" element={user ? <CreateFundraiser user={user} /> : <Login />} />
-        <Route path="auction/create" element={<CreateAuctionItem />} />
+        <Route path="auction/create" element={user ? <CreateAuctionItem user={user}/>: <Login/>} />
       </Route>
     </Routes>
   );

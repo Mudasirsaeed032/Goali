@@ -15,35 +15,61 @@ function CreateAuctionItem({ user }) {
     const cloudName = "dgvc3mvc5";
 
     const response = await axios.post(
-        `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
-        , formData)
+      `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`
+      , formData)
 
     return response.data.secure_url;
 
-}
+  }
 
   // Form Submission Handler
   const onSubmit = async (data) => {
+    console.log('Form Data:', data);  // Check form data
+
+    // Ensure user is logged in
+    if (!user || !user.id) {
+      alert("You must be logged in to submit an auction item.");
+      return;
+    }
+
     let uploadedImageURL = imageURL;
     if (image && !imageURL) {
-      uploadedImageURL = await handleImageUpload(image);
-      setImageURL(uploadedImageURL);
+      try {
+        uploadedImageURL = await handleImageUpload(image);
+        setImageURL(uploadedImageURL);
+      } catch (err) {
+        console.error('Image upload failed', err);
+        alert('Image upload failed. Please try again.');
+        return;
+      }
     }
 
     const auctionItemData = {
       title: data.title,
       description: data.description,
-      starting_bid: data.starting_bid,
+      current_bid: data.starting_bid || 0,  // Use current_bid instead of starting_bid
       end_time: data.end_time,
+      start_time: data.start_time,  // Add start time
       image_url: uploadedImageURL,
+      owner_id: user.id,  // Ensure user is logged in
     };
 
-    await axios.post("http://localhost:5000/auction-items", auctionItemData, {
-      withCredentials: true,
-    });
+    console.log('Auction Item Data:', auctionItemData);  // Log data before submitting
 
-    alert("Auction Item Created!");
+    try {
+      const response = await axios.post("http://localhost:5000/auction", auctionItemData, {
+        withCredentials: true,
+      });
+      console.log('Auction Item Created:', response.auctionItemData);
+      alert("Auction Item Created!");
+    } catch (error) {
+      console.error("Error creating auction item:", error.response?.data || error.message);
+      alert(`Error creating auction item: ${error.response?.data?.error || error.message}`);
+    }
   };
+
+
+
 
   return (
     <div className="max-w-xl mx-auto p-6 bg-white rounded shadow">
@@ -71,6 +97,13 @@ function CreateAuctionItem({ user }) {
           className="w-full border p-2 rounded"
         />
         {errors.starting_bid && <p className="text-red-500">{errors.starting_bid.message}</p>}
+
+        <input
+          {...register('start_time', { required: "Start time is required" })}
+          type="datetime-local"
+          className="w-full border p-2 rounded"
+        />
+        {errors.start_time && <p className="text-red-500">{errors.start_time.message}</p>}
 
         <input
           {...register('end_time', { required: "End time is required" })}

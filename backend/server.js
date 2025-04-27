@@ -19,7 +19,9 @@ app.use(cookieParser());
 
 app.use('/auth', authRoutes);
 
-app.use('/fundraisers', fundraisersRoute)
+app.use('/fundraisers', fundraisersRoute);
+
+app.use('/auction', auctionRoutes);
 
 app.get('/protected', checkAuth, (req, res) => {
   res.json({

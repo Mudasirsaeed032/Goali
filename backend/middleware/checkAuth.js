@@ -6,7 +6,6 @@ const checkAuth = async (req, res, next) => {
   const token = cookies['sb-access-token'];
 
   console.log('== Incoming Request to /protected ==');
-  console.log('[Parsed Cookie]', cookies);
   console.log('[Access Token]', token?.slice(0, 20) + '...');
 
   if (!token) {
@@ -15,7 +14,6 @@ const checkAuth = async (req, res, next) => {
   }
 
   const { data: userSession, error } = await supabase.auth.getUser(token);
-  console.log('[Supabase getUser response]', userSession, error?.message);
 
   if (error || !userSession?.user) {
     return res.status(401).json({ error: 'Invalid session' });
