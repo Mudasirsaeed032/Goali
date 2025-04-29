@@ -15,14 +15,16 @@ function AuctionDetail() {
     const [currentBid, setCurrentBid] = useState(0);
     const [newBid, setNewBid] = useState('');
     const [timeLeft, setTimeLeft] = useState('');
+    const [highestBid, setHighestBid] = useState(null);
 
     // Fetch auction item
     useEffect(() => {
         const fetchAuctionItem = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/auction/${id}`);
-                setAuctionItem(response.data);
-                setCurrentBid(response.data.current_bid || 0);
+                const response = await axios.get(`http://localhost:5000/auction/${id}`, { withCredentials: true });
+                setAuctionItem(response.data.auctionItem);
+                setCurrentBid(response.data.auctionItem.current_bid || 0);
+                setHighestBid(response.data.highestBid);
             } catch (error) {
                 console.error("Error fetching auction item:", error);
             }
@@ -46,9 +48,6 @@ function AuctionDetail() {
 
     // Countdown timer effect
     useEffect(() => {
-        console.log('Raw auction end_time:', auctionItem?.end_time);
-        console.log('Parsed end_time:', new Date(auctionItem?.end_time));
-        console.log('Now time:', new Date());
 
         if (!auctionItem?.end_time) return;
 
@@ -133,6 +132,14 @@ function AuctionDetail() {
                     Place Bid
                 </button>
             </div>
+            {timeLeft === 'Auction Ended' && highestBid && (
+                <div className="mt-6 p-4 border rounded bg-green-100">
+                    <h2 className="text-xl font-bold text-green-700 mb-2">Auction Winner 🏆</h2>
+                    <p>Winning Bid: <strong>${highestBid.amount}</strong></p>
+                    <p>Winner User ID: <strong>{highestBid.user_id}</strong></p>
+                </div>
+            )}
+
         </div>
     );
 }

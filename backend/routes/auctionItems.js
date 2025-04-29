@@ -62,25 +62,40 @@ router.post('/', checkAuth, async (req, res) => {
   }
 });
 
-router.get('/:id', async(req, res)=>{
-  const {id} = req.params;
-  const { data, error } = await supabase
+// GET /auction/:id
+router.get('/:id', checkAuth, async (req, res) => {
+  const { id } = req.params;
+
+  // Fetch auction item
+  const { data: auctionItem, error: fetchError } = await supabase
     .from('auction_items')
     .select('*')
     .eq('id', id)
     .single();
 
-  if (error) {
-    console.error('[Auction Fetch Error]', error.message);
-    return res.status(500).json({ error: 'Failed to fetch auction item' });
-  }
-
-  if (!data) {
+  if (fetchError || !auctionItem) {
     return res.status(404).json({ error: 'Auction item not found' });
   }
 
-  res.json(data);
-})
+  // Fetch highest bid
+  const { data: highestBidData, error: bidError } = await supabase
+    .from('bids')
+    .select('amount, user_id')
+    .eq('item_id', id)
+    .order('amount', { ascending: false })
+    .limit(1)
+    .single();
+
+  if (bidError) {
+    console.error('[Bid Fetch Error]', bidError.message);
+  }
+
+  res.status(200).json({
+    auctionItem,
+    highestBid: highestBidData || null,
+  });
+});
+
 
 // Place a bid
 router.post('/:id/bid', checkAuth, async (req, res) => {
@@ -112,7 +127,7 @@ router.post('/:id/bid', checkAuth, async (req, res) => {
   if (now > auctionEndTime) {
     return res.status(400).json({ error: 'Auction has already ended' });
   }
-  
+
   // Check if bid is higher than current bid
   if (bid_amount <= auctionItem.current_bid) {
     return res.status(400).json({ error: 'Bid must be higher than current bid' });
@@ -146,8 +161,6 @@ router.post('/:id/bid', checkAuth, async (req, res) => {
   console.log(`✅ Bid placed: $${bid_amount} by user ${userId}`);
   res.status(200).json({ message: 'Bid placed successfully' });
 });
-
-module.exports = router;
 
 
 
