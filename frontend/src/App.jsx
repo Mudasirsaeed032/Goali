@@ -15,6 +15,7 @@ import AuctionDetail from './Components/Auction/AuctionDetail';
 import CreateEvent from './Components/Events/CreateEvent';
 import EventsList from './Components/Events/EventsList';
 import TicketSuccess from './Components/Tickets/TicketsSuccess';
+import MyTickets from './Components/Tickets/MyTickets';
 
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
         <Route path="/event/create" element={<CreateEvent user={user} />} />
         <Route path="/events" element={<EventsList />} />
         <Route path="/tickets/success" element={<TicketSuccess />} />
+        <Route path="/mytickets" element={<MyTickets />} />
       </Route>
     </Routes>
   );

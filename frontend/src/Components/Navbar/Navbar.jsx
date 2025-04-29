@@ -117,6 +117,20 @@ function Navbar({ user, setUser }) {
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link to="/mytickets" className="nav-link flex items-center">
+                    My Tickets
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <Link to="/events" className="nav-link flex items-center">
+                    Events
+                  </Link>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
 
               {user?.role === "admin" && (
                 <NavigationMenuItem>

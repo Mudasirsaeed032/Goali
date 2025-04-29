@@ -26,4 +26,26 @@ router.post('/', checkAuth, async (req, res) => {
   res.status(201).json({ ticket: data });
 });
 
+// GET /tickets/my - Get all tickets for logged-in user
+router.get('/my', checkAuth, async (req, res) => {
+    const userId = req.user.id;
+  
+    const { data, error } = await supabase
+      .from('tickets')
+      .select(`
+        id,
+        qr_code_url,
+        created_at,
+        event_id,
+        events ( title, description, location, price )
+      `)
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false });
+  
+    if (error) return res.status(500).json({ error: error.message });
+  
+    res.json(data);
+  });
+  
+
 module.exports = router;
