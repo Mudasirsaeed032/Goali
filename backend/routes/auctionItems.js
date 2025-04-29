@@ -82,6 +82,65 @@ router.get('/:id', async(req, res)=>{
   res.json(data);
 })
 
+// Place a bid
+router.post('/:id/bid', checkAuth, async (req, res) => {
+  const { id } = req.params; // Auction item ID
+  const { bid_amount } = req.body;
+  const userId = req.user.id; // Logged-in user's ID
+
+  // Validate
+  if (!bid_amount || isNaN(bid_amount)) {
+    return res.status(400).json({ error: 'Bid amount is required and must be a number' });
+  }
+
+  // Fetch the auction item
+  const { data: auctionItem, error: fetchError } = await supabase
+    .from('auction_items')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (fetchError || !auctionItem) {
+    console.error('[Bid Fetch Error]', fetchError?.message);
+    return res.status(404).json({ error: 'Auction item not found' });
+  }
+
+  // Check if bid is higher than current bid
+  if (bid_amount <= auctionItem.current_bid) {
+    return res.status(400).json({ error: 'Bid must be higher than current bid' });
+  }
+
+  // Insert the new bid into bids table
+  const { error: insertError } = await supabase
+    .from('bids')
+    .insert([{
+      item_id: id,
+      user_id: userId,
+      amount: bid_amount,
+    }]);
+
+  if (insertError) {
+    console.error('[Bid Insert Error]', insertError.message);
+    return res.status(500).json({ error: 'Failed to place bid' });
+  }
+
+  // Update the auction item's current_bid
+  const { error: updateError } = await supabase
+    .from('auction_items')
+    .update({ current_bid: bid_amount })
+    .eq('id', id);
+
+  if (updateError) {
+    console.error('[Bid Update Error]', updateError.message);
+    return res.status(500).json({ error: 'Failed to update auction current bid' });
+  }
+
+  console.log(`✅ Bid placed: $${bid_amount} by user ${userId}`);
+  res.status(200).json({ message: 'Bid placed successfully' });
+});
+
+module.exports = router;
+
 
 
 module.exports = router;

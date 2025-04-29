@@ -101,29 +101,31 @@ function Navbar({ user, setUser }) {
           <NavigationMenu>
             <NavigationMenuList>
               <NavigationMenuItem>
-                <Link to="/">
-                  <NavigationMenuLink className="nav-link">
+                <NavigationMenuLink asChild>
+                  <Link to="/" className="nav-link flex items-center">
                     <Home className="mr-2 h-4 w-4" />
                     Home
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
+
               <NavigationMenuItem>
-                <Link to="/fundraisers">
-                  <NavigationMenuLink className="nav-link">
+                <NavigationMenuLink asChild>
+                  <Link to="/fundraisers" className="nav-link flex items-center">
                     <DollarSign className="mr-2 h-4 w-4" />
                     Fundraisers
-                  </NavigationMenuLink>
-                </Link>
+                  </Link>
+                </NavigationMenuLink>
               </NavigationMenuItem>
+
               {user?.role === "admin" && (
                 <NavigationMenuItem>
-                  <Link to="/makeadmin">
-                    <NavigationMenuLink className="nav-link">
+                  <NavigationMenuLink asChild>
+                    <Link to="/makeadmin" className="nav-link flex items-center">
                       <ShieldCheck className="mr-2 h-4 w-4" />
                       Make Admin
-                    </NavigationMenuLink>
-                  </Link>
+                    </Link>
+                  </NavigationMenuLink>
                 </NavigationMenuItem>
               )}
             </NavigationMenuList>
@@ -160,8 +162,12 @@ function Navbar({ user, setUser }) {
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="ghost" onClick={() => navigate("/login")}>Login</Button>
-              <Button onClick={() => navigate("/signup")}>Sign Up</Button>
+              <Button variant="ghost" onClick={() => navigate("/login")}>
+                Login
+              </Button>
+              <Button onClick={() => navigate("/signup")}>
+                Sign Up
+              </Button>
             </>
           )}
         </div>
