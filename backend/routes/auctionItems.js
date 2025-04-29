@@ -105,6 +105,14 @@ router.post('/:id/bid', checkAuth, async (req, res) => {
     return res.status(404).json({ error: 'Auction item not found' });
   }
 
+  // 🚨 Check if auction has already ended
+  const now = new Date();
+  const auctionEndTime = new Date(auctionItem.end_time);
+
+  if (now > auctionEndTime) {
+    return res.status(400).json({ error: 'Auction has already ended' });
+  }
+  
   // Check if bid is higher than current bid
   if (bid_amount <= auctionItem.current_bid) {
     return res.status(400).json({ error: 'Bid must be higher than current bid' });
