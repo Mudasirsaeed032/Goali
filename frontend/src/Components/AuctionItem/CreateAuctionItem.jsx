@@ -108,6 +108,7 @@ function CreateAuctionItem({ user }) {
         <input
           {...register('end_time', { required: "End time is required" })}
           type="datetime-local"
+          min={new Date().toISOString().slice(0, 16)} // ⬅️ This prevents selecting past time
           className="w-full border p-2 rounded"
         />
         {errors.end_time && <p className="text-red-500">{errors.end_time.message}</p>}

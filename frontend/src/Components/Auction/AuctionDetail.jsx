@@ -2,20 +2,21 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { io } from "socket.io-client";
+import { differenceInSeconds, formatDuration, intervalToDuration } from "date-fns";
 
-// Initialize socket outside component to avoid multiple connections
 const socket = io('http://localhost:5000', {
     transports: ['polling'],
-    withCredentials: true
+    withCredentials: true,
 });
 
 function AuctionDetail() {
-    const { id } = useParams(); // Get the auction item ID from URL
+    const { id } = useParams();
     const [auctionItem, setAuctionItem] = useState(null);
     const [currentBid, setCurrentBid] = useState(0);
     const [newBid, setNewBid] = useState('');
+    const [timeLeft, setTimeLeft] = useState('');
 
-    // Fetch auction item details on mount
+    // Fetch auction item
     useEffect(() => {
         const fetchAuctionItem = async () => {
             try {
@@ -43,7 +44,35 @@ function AuctionDetail() {
         };
     }, [id]);
 
-    // Handle placing a bid
+    // Countdown timer effect
+    useEffect(() => {
+        console.log('Raw auction end_time:', auctionItem?.end_time);
+        console.log('Parsed end_time:', new Date(auctionItem?.end_time));
+        console.log('Now time:', new Date());
+
+        if (!auctionItem?.end_time) return;
+
+        const endTime = new Date(auctionItem.end_time); // Supabase timestamps are in UTC!
+
+        const interval = setInterval(() => {
+            const now = new Date(); // Local time
+            const secondsLeft = (endTime.getTime() - now.getTime()) / 1000;
+
+            if (secondsLeft <= 0) {
+                setTimeLeft('Auction Ended');
+                clearInterval(interval);
+            } else {
+                const duration = intervalToDuration({ start: now, end: endTime });
+                setTimeLeft(
+                    formatDuration(duration, { format: ['hours', 'minutes', 'seconds'] })
+                );
+            }
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [auctionItem]);
+
+
     const handlePlaceBid = async () => {
         if (!newBid || Number(newBid) <= currentBid) {
             alert('Your bid must be higher than the current bid!');
@@ -56,7 +85,6 @@ function AuctionDetail() {
                 { withCredentials: true }
             );
 
-            // Emit event after placing bid
             socket.emit('place_bid', {
                 item_id: id,
                 amount: Number(newBid),
@@ -80,8 +108,13 @@ function AuctionDetail() {
             <div className="text-lg mb-4">
                 <span className="font-bold">Starting Bid:</span> ${auctionItem.starting_bid ?? 0}
             </div>
-            <div className="text-xl font-bold mb-6">
+            <div className="text-xl font-bold mb-2">
                 Current Highest Bid: <span className="text-green-600">${currentBid}</span>
+            </div>
+
+            {/* Countdown Timer */}
+            <div className="text-md font-semibold text-blue-700 mb-6">
+                Time Left: {timeLeft}
             </div>
 
             <div className="flex gap-4 items-center">
@@ -95,6 +128,7 @@ function AuctionDetail() {
                 <button
                     onClick={handlePlaceBid}
                     className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+                    disabled={timeLeft === 'Auction Ended'}
                 >
                     Place Bid
                 </button>
