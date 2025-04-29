@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { supabase } = require('../supabaseClient');
+const checkAuth = require('../middleware/checkAuth')
 
 router.post('/', checkAuth, async (req, res) => {
     const { title, description, price, location } = req.body;

@@ -12,6 +12,7 @@ const requireAdmin = require('./middleware/requireAdmin');
 const fundraisersRoute = require('./routes/fundraisers');
 const authRoutes = require('./routes/auth');
 const auctionRoutes = require('./routes/auctionItems');
+const eventsRoute = require('./routes/events');
 
 const app = express();
 const server = http.createServer(app);
@@ -32,6 +33,7 @@ app.use(cookieParser());
 app.use('/auth', authRoutes);
 app.use('/fundraisers', fundraisersRoute);
 app.use('/auction', auctionRoutes);
+app.use('/events', eventsRoute);
 
 
 //Example protected route
