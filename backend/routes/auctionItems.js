@@ -90,9 +90,22 @@ router.get('/:id', checkAuth, async (req, res) => {
     console.error('[Bid Fetch Error]', bidError.message);
   }
 
+  // Fetch all bids
+  const { data: allBids, error: allBidsError } = await supabase
+    .from('bids')
+    .select('amount, user_id, bid_time')
+    .eq('item_id', id)
+    .order('bid_time', { ascending: false });
+
+  if (allBidsError) {
+    console.error('[All Bids Fetch Error]', allBidsError.message);
+  }
+
+
   res.status(200).json({
     auctionItem,
     highestBid: highestBidData || null,
+    allBids: allBids || [],
   });
 });
 

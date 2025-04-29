@@ -16,6 +16,9 @@ function AuctionDetail() {
     const [newBid, setNewBid] = useState('');
     const [timeLeft, setTimeLeft] = useState('');
     const [highestBid, setHighestBid] = useState(null);
+    const [allBids, setAllBids] = useState([]);
+
+
 
     // Fetch auction item
     useEffect(() => {
@@ -25,6 +28,8 @@ function AuctionDetail() {
                 setAuctionItem(response.data.auctionItem);
                 setCurrentBid(response.data.auctionItem.current_bid || 0);
                 setHighestBid(response.data.highestBid);
+                setAllBids(response.data.allBids || []);
+
             } catch (error) {
                 console.error("Error fetching auction item:", error);
             }
@@ -110,6 +115,24 @@ function AuctionDetail() {
             <div className="text-xl font-bold mb-2">
                 Current Highest Bid: <span className="text-green-600">${currentBid}</span>
             </div>
+
+            <div className="mt-8">
+                <h2 className="text-2xl font-bold mb-4">Bid History</h2>
+                {allBids.length === 0 ? (
+                    <p>No bids placed yet.</p>
+                ) : (
+                    <ul className="space-y-3">
+                        {allBids.map((bid, index) => (
+                            <li key={index} className="border p-3 rounded bg-gray-100">
+                                <p><strong>Bid:</strong> ${bid.amount}</p>
+                                <p><strong>Bidder ID:</strong> {bid.user_id}</p>
+                                <p><strong>Placed at:</strong> {new Date(bid.bid_time).toLocaleString()}</p>
+                            </li>
+                        ))}
+                    </ul>
+                )}
+            </div>
+
 
             {/* Countdown Timer */}
             <div className="text-md font-semibold text-blue-700 mb-6">
