@@ -63,6 +63,18 @@ router.post('/', checkAuth, async (req, res) => {
   }
 });
 
+// GET /admin/auctions - View all auctions
+router.get('/admin', checkAuth, requireAdmin, async (req, res) => {
+  const { data, error } = await supabase
+    .from('auction_items')
+    .select('id, title, description, current_bid, image_url, start_time, end_time')
+    .order('created_at', { ascending: false });
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  res.json(data);
+});
+
 // GET /auction/:id
 router.get('/:id', checkAuth, async (req, res) => {
   const { id } = req.params;
@@ -109,6 +121,7 @@ router.get('/:id', checkAuth, async (req, res) => {
     allBids: allBids || [],
   });
 });
+
 
 
 // Place a bid
@@ -176,17 +189,7 @@ router.post('/:id/bid', checkAuth, async (req, res) => {
   res.status(200).json({ message: 'Bid placed successfully' });
 });
 
-// GET /admin/auctions - View all auctions
-router.get('/admin', checkAuth, requireAdmin, async (req, res) => {
-  const { data, error } = await supabase
-    .from('auction_items')
-    .select('id, title, description, current_bid, image_url, start_time, end_time')
-    .order('created_at', { ascending: false });
 
-  if (error) return res.status(500).json({ error: error.message });
-
-  res.json(data);
-});
 
 // DELETE /admin/:id - Delete auction item
 router.delete('/admin/:id', checkAuth, requireAdmin, async (req, res) => {

@@ -19,6 +19,7 @@ import MyTickets from './Components/Tickets/MyTickets';
 import AdminDashboard from './Components/Admin/AdminDashboard';
 import RequireAdmin from './Components/Admin/RequireAdmin';
 import ManageFundraisers from './Components/Admin/ManageFundraisers';
+import ManageAuctions from './Components/Admin/ManageAuctions';
 
 
 function App() {
@@ -48,10 +49,8 @@ function App() {
         <Route path="/tickets/success" element={<TicketSuccess />} />
         <Route path="/mytickets" element={<MyTickets />} />
         <Route path="/admin" element={<RequireAdmin user={user}><AdminDashboard /></RequireAdmin>} />
-        <Route
-          path="/admin/fundraisers"
-          element={<RequireAdmin user={user}><ManageFundraisers /></RequireAdmin>}
-        />
+        <Route path="/admin/fundraisers" element={<RequireAdmin user={user}><ManageFundraisers /></RequireAdmin>} />
+        <Route path="/admin/auctions" element={<RequireAdmin user={user}><ManageAuctions /></RequireAdmin>}/>
       </Route>
     </Routes>
   );
