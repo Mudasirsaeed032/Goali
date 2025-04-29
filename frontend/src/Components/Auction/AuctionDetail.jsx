@@ -139,7 +139,6 @@ function AuctionDetail() {
                     <p>Winner User ID: <strong>{highestBid.user_id}</strong></p>
                 </div>
             )}
-
         </div>
     );
 }
