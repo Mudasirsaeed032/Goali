@@ -12,6 +12,10 @@ import CreateFundraiser from './Components/Fundraiser/CreateFundraiser';
 import FundraiserList from './Components/Fundraiser/FundraiserList';
 import CreateAuctionItem from './Components/AuctionItem/CreateAuctionItem';
 import AuctionDetail from './Components/Auction/AuctionDetail';
+import CreateEvent from './Components/Events/CreateEvent';
+import EventsList from './Components/Events/EventsList';
+import TicketSuccess from './Components/Tickets/TicketsSuccess';
+
 
 function App() {
   const [user, setUser] = useState(null);
@@ -27,14 +31,17 @@ function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
-        <Route path="fundraisers" element={<FundraiserList/>} />
+        <Route path="fundraisers" element={<FundraiserList />} />
         <Route path="login" element={<Login setUser={setUser} />} />
         <Route path="signup" element={<Signup />} />
         <Route path="makeadmin" element={<MakeAdmin />} />
         <Route path="navbar" element={<Navbar />} />
         <Route path="fundraisers/create" element={user ? <CreateFundraiser user={user} /> : <Login />} />
-        <Route path="auction/create" element={user ? <CreateAuctionItem user={user}/>: <Login/>} />
-        <Route path='/auction/:id' element={<AuctionDetail/>}/>
+        <Route path="auction/create" element={user ? <CreateAuctionItem user={user} /> : <Login />} />
+        <Route path='/auction/:id' element={<AuctionDetail />} />
+        <Route path="/event/create" element={<CreateEvent user={user} />} />
+        <Route path="/events" element={<EventsList />} />
+        <Route path="/tickets/success" element={<TicketSuccess />} />
       </Route>
     </Routes>
   );
