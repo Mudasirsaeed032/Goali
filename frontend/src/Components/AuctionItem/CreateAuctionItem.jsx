@@ -11,14 +11,19 @@ function CreateAuctionItem({ user }) {
   const [defaultStartTime, setDefaultStartTime] = useState("");
   const [defaultEndTime, setDefaultEndTime] = useState("");
 
+  function getLocalDateTimeString(date) {
+    const offset = date.getTimezoneOffset();
+    const localDate = new Date(date.getTime() - offset * 60 * 1000);
+    return localDate.toISOString().slice(0, 16); // returns in "YYYY-MM-DDTHH:mm"
+  }
+
+
   useEffect(() => {
     const now = new Date();
     const oneHourLater = new Date(now.getTime() + 60 * 60 * 1000);
 
-    const formatDateTime = (date) => date.toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm
-
-    setDefaultStartTime(formatDateTime(now));
-    setDefaultEndTime(formatDateTime(oneHourLater));
+    setDefaultStartTime(getLocalDateTimeString(now));
+    setDefaultEndTime(getLocalDateTimeString(oneHourLater));
   }, []);
 
   const handleImageUpload = async (file) => {
@@ -34,6 +39,12 @@ function CreateAuctionItem({ user }) {
 
     return response.data.secure_url;
   };
+
+  function toUTCISOString(localDateTimeStr) {
+    const localDate = new Date(localDateTimeStr);
+    return new Date(localDate.getTime() - localDate.getTimezoneOffset() * 60000).toISOString();
+  }
+
 
   const onSubmit = async (data) => {
     console.log('Form Data:', data);
@@ -59,8 +70,8 @@ function CreateAuctionItem({ user }) {
       title: data.title,
       description: data.description,
       current_bid: data.starting_bid || 0,
-      start_time: data.start_time,
-      end_time: data.end_time,
+      start_time: toUTCISOString(data.start_time),
+      end_time: toUTCISOString(data.end_time),
       image_url: uploadedImageURL,
       owner_id: user.id,
     };
