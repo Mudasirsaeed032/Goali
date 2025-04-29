@@ -142,6 +142,16 @@ function Navbar({ user, setUser }) {
                   </NavigationMenuLink>
                 </NavigationMenuItem>
               )}
+              {user?.role === "admin" && (
+                <NavigationMenuItem>
+                  <NavigationMenuLink asChild>
+                    <Link to="/admin" className="nav-link flex items-center">
+                      <ShieldCheck className="mr-2 h-4 w-4" />
+                      Admin Dashboard
+                    </Link>
+                  </NavigationMenuLink>
+                </NavigationMenuItem>
+              )}
             </NavigationMenuList>
           </NavigationMenu>
         </div>

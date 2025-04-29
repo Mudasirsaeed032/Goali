@@ -1,6 +1,7 @@
 const express = require('express');
 const { supabase } = require('../supabaseClient');
 const checkAuth = require('../middleware/checkAuth');
+const requireAdmin = require('../middleware/requireAdmin');
 
 const router = express.Router();
 
@@ -46,6 +47,32 @@ router.post('/', checkAuth, async (req, res) => {
 
     res.status(201).json(data);
 })
+
+// GET /admin/fundraisers → View all fundraisers
+router.get('/admin', checkAuth, requireAdmin, async (req, res) => {
+  const { data, error } = await supabase
+    .from('fundraisers')
+    .select('id, title, description, image_url, collected_amount, goal_amount, created_at');
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  res.json(data);
+});
+
+// DELETE /admin/fundraisers/:id
+router.delete('/admin/:id', checkAuth, requireAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  const { error } = await supabase
+    .from('fundraisers')
+    .delete()
+    .eq('id', id);
+
+  if (error) return res.status(500).json({ error: error.message });
+
+  res.json({ message: 'Fundraiser deleted' });
+});
+
 
 
 module.exports = router;
