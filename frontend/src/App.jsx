@@ -11,6 +11,7 @@ import Navbar from './Components/Navbar/Navbar';
 import CreateFundraiser from './Components/Fundraiser/CreateFundraiser';
 import FundraiserList from './Components/Fundraiser/FundraiserList';
 import CreateAuctionItem from './Components/AuctionItem/CreateAuctionItem';
+import AuctionDetail from './Components/Auction/AuctionDetail';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -33,6 +34,7 @@ function App() {
         <Route path="navbar" element={<Navbar />} />
         <Route path="fundraisers/create" element={user ? <CreateFundraiser user={user} /> : <Login />} />
         <Route path="auction/create" element={user ? <CreateAuctionItem user={user}/>: <Login/>} />
+        <Route path='/auction/:id' element={<AuctionDetail/>}/>
       </Route>
     </Routes>
   );
