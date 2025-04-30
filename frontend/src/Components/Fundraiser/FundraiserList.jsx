@@ -1,69 +1,43 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 function FundraiserList() {
   const [fundraisers, setFundraisers] = useState([]);
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
 
-  // Fetch fundraisers from backend (with optional search)
   useEffect(() => {
-    const fetchFundraisers = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get("http://localhost:5000/fundraisers", {
-          params: { search },
-        });
-        setFundraisers(response.data);
-      } catch (error) {
-        console.error("Error fetching fundraisers:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFundraisers();
-  }, [search]);
+    axios.get('http://localhost:5000/fundraisers/with-progress')
+      .then(res => setFundraisers(res.data))
+      .catch(err => console.error('Failed to fetch fundraisers', err));
+  }, []);
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-4">Fundraisers</h2>
+    <div className="max-w-4xl mx-auto p-6">
+      <h2 className="text-3xl font-bold mb-6">Fundraisers</h2>
+      {fundraisers.map(f => {
+        const percent = Math.min((f.collected_amount / f.goal_amount) * 100, 100);
 
-      {/* Search Bar */}
-      <input
-        type="text"
-        placeholder="Search Fundraisers"
-        className="w-full border p-2 rounded mb-6"
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-
-      {/* Loading Spinner */}
-      {loading && <p>Loading...</p>}
-
-      {/* Fundraiser List */}
-      {!loading && fundraisers.length === 0 && (
-        <p>No fundraisers found. Please try again later.</p>
-      )}
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {fundraisers.map((fundraiser) => (
-          <div
-            key={fundraiser.id}
-            className="p-4 bg-gray-100 rounded shadow hover:shadow-lg transition"
-          >
-            <img
-              src={fundraiser.image_url}
-              alt={fundraiser.title}
-              className="w-full h-40 object-cover rounded"
-            />
-            <h3 className="text-xl font-semibold mt-2">{fundraiser.title}</h3>
-            <p className="text-sm text-gray-700 mt-2">
-              {fundraiser.description.slice(0, 100)}...
+        return (
+          <div key={f.id} className="bg-white p-4 rounded shadow mb-4">
+            <h3 className="text-xl font-semibold">{f.title}</h3>
+            <p className="text-gray-700 mb-2">{f.description}</p>
+            <img src={f.image_url} alt="fundraiser" className="h-48 object-cover rounded mb-4" />
+            <div className="w-full bg-gray-200 rounded-full h-4 mb-2">
+              <div
+                className="bg-blue-600 h-4 rounded-full"
+                style={{ width: `${percent}%` }}
+              />
+            </div>
+            <p className="text-sm text-gray-600">
+              Raised Rs. {f.collected_amount} of Rs. {f.goal_amount}
             </p>
+            <a href={`/fundraisers/${f.id}/donate`}>
+              <button className="mt-2 px-4 py-2 bg-green-600 text-white rounded">
+                Donate
+              </button>
+            </a>
           </div>
-        ))}
-      </div>
+        );
+      })}
     </div>
   );
 }

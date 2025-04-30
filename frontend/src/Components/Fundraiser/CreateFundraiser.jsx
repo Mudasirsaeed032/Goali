@@ -33,9 +33,15 @@ function CreateFundraiser({ user }) {
 
     const fundraiserData = {
       title: data.title,
-      description: description,
+      description: description, // or data.description if you've registered it via react-hook-form
       image_url: uploadedImageURL,
+      goal_amount: parseFloat(data.goal_amount),
+      collected_amount: 0,
+      owner_id: user.id,
     };
+    console.log("Fundraiser Payload:", fundraiserData);
+
+
 
     await axios.post("http://localhost:5000/fundraisers", fundraiserData, {
       withCredentials: true,
@@ -64,6 +70,20 @@ function CreateFundraiser({ user }) {
           className="w-full border p-2 rounded"
           required
         />
+        <input
+          {...register('goal_amount', {
+            required: "Goal amount is required",
+            valueAsNumber: true,
+            min: { value: 1, message: "Must be at least Rs. 1" }
+          })}
+          type="number"
+          placeholder="Target Amount (e.g. 10000)"
+          className="w-full border p-2 rounded"
+        />
+        {errors.goal_amount && (
+          <p className="text-red-500">{errors.goal_amount.message}</p>
+        )}
+
 
         {/* Image Upload */}
         <input
