@@ -27,18 +27,23 @@ router.get('/', async (req, res) => {
 
 
 router.post('/', checkAuth, async (req, res) => {
-  const { title, description, image_url } = req.body;
+  const { title, description, image_url, goal_amount } = req.body;
   const userId = req.user.id;
 
-  // Validate data
-  if (!title || !description || !image_url) {
+  if (!title || !description || !image_url || goal_amount === undefined) {
     return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  // Insert fundraiser into the database
   const { data, error } = await supabase
     .from('fundraisers')
-    .insert([{ title, description, image_url, owner_id: userId }])
+    .insert([{
+      title,
+      description,
+      image_url,
+      goal_amount,
+      collected_amount: 0,
+      owner_id: userId
+    }])
     .single();
 
   if (error) {
@@ -46,7 +51,8 @@ router.post('/', checkAuth, async (req, res) => {
   }
 
   res.status(201).json(data);
-})
+});
+
 
 // GET /admin/fundraisers → View all fundraisers
 router.get('/admin', checkAuth, requireAdmin, async (req, res) => {
