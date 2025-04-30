@@ -2,9 +2,34 @@ require('dotenv').config();
 const express = require('express');
 const router = express.Router();
 const { supabase } = require('../supabaseClient');
-const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY)
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const requireAdmin = require('../middleware/requireAdmin');
 
 const checkAuth = require('../middleware/checkAuth');
+
+// 🔐 GET /admin/events
+router.get('/admin', checkAuth, requireAdmin, async (req, res) => {
+  const { data, error } = await supabase
+    .from('events')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json(data);
+});
+
+// 🔐 DELETE /admin/events/:id
+router.delete('/admin/:id', checkAuth, requireAdmin, async (req, res) => {
+  const { id } = req.params;
+
+  const { error } = await supabase
+    .from('events')
+    .delete()
+    .eq('id', id);
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ message: 'Event deleted successfully' });
+});
 
 router.post('/', checkAuth, async (req, res) => {
   const { title, description, price, location } = req.body;

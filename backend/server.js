@@ -14,6 +14,7 @@ const authRoutes = require('./routes/auth');
 const auctionRoutes = require('./routes/auctionItems');
 const eventsRoute = require('./routes/events');
 const ticketsRoute = require('./routes/tickets');
+const userRoutes = require('./routes/users');
 
 const app = express();
 const server = http.createServer(app);
@@ -36,6 +37,7 @@ app.use('/fundraisers', fundraisersRoute);
 app.use('/auction', auctionRoutes);
 app.use('/events', eventsRoute);
 app.use('/tickets', ticketsRoute);
+app.use('/users', userRoutes);
 
 
 //Example protected route
