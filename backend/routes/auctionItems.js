@@ -5,6 +5,27 @@ const requireAdmin = require('../middleware/requireAdmin');
 
 const router = express.Router();
 
+// GET /auction - View all auctions (for AuctionList component)
+router.get('/', async (req, res) => {
+  try {
+    const { data, error } = await supabase
+      .from('auction_items')
+      .select('id, title, description, current_bid, image_url, start_time, end_time')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('[GET /auction Error]', error.message);
+      return res.status(500).json({ error: error.message });
+    }
+
+    res.status(200).json(data); // Send auction items data as response
+  } catch (err) {
+    console.error('[GET /auction Exception]', err.message);
+    res.status(500).json({ error: 'Server error while fetching auction items' });
+  }
+});
+
+
 // POST /auction
 router.post('/', checkAuth, async (req, res) => {
   const { title, description, current_bid, end_time, start_time, image_url } = req.body;

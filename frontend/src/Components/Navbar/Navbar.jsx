@@ -209,7 +209,7 @@ function Navbar({ user, setUser }) {
             <NavigationMenuItem>
               <NavigationMenuLink asChild>
                 <Link
-                  to="/auction/create"
+                  to="/auction"
                   className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary"
                 >
                   <DollarSign className="h-4 w-4 text-muted-foreground group-hover:text-primary" />

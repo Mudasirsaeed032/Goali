@@ -24,7 +24,7 @@ import ManageEvents from './Components/Admin/ManageEvents';
 import ManageUsers from './Components/Admin/ManageUsers';
 import AdminFundraiserProgress from './Components/Admin/AdminFundraiserProgress';
 import FundraiserDetail from './Components/Fundraiser/FundraiserDetail';
-
+import AuctionList from './Components/Auction/AuctionList';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -46,15 +46,16 @@ function App() {
         <Route path="makeadmin" element={<MakeAdmin />} />
         <Route path="navbar" element={<Navbar />} />
         <Route path="fundraisers/create" element={user ? <CreateFundraiser user={user} /> : <Login />} />
+        <Route path="auction" element={<AuctionList />} />
         <Route path="auction/create" element={user ? <CreateAuctionItem user={user} /> : <Login />} />
-        <Route path='/auction/:id' element={<AuctionDetail />} />
+        <Route path="/auction/:id" element={<AuctionDetail />} />
         <Route path="/event/create" element={<CreateEvent user={user} />} />
         <Route path="/events" element={<EventsList />} />
         <Route path="/tickets/success" element={<TicketSuccess />} />
         <Route path="/mytickets" element={<MyTickets />} />
         <Route path="/admin" element={<RequireAdmin user={user}><AdminDashboard /></RequireAdmin>} />
         {/* <Route path="/admin/fundraisers" element={<RequireAdmin user={user}><ManageFundraisers /></RequireAdmin>} /> */}
-        <Route path="/admin/auctions" element={<RequireAdmin user={user}><ManageAuctions /></RequireAdmin>}/>
+        <Route path="/admin/auctions" element={<RequireAdmin user={user}><ManageAuctions /></RequireAdmin>} />
         <Route path="/admin/events" element={<ManageEvents user={user} />} />
         <Route path="/admin/users" element={<ManageUsers user={user} />} />
         <Route path="/admin/fundraisers" element={<AdminFundraiserProgress user={user} />} />
