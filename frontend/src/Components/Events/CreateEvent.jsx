@@ -123,10 +123,10 @@ function CreateEvent({ user }) {
               <div className="space-y-2">
                 <Label htmlFor="price" className="flex items-center">
                   <TicketIcon className="h-4 w-4 mr-2 text-muted-foreground" />
-                  Ticket Price (₹)
+                  Ticket Price ($)
                 </Label>
                 <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2">₹</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2">$</span>
                   <Input
                     id="price"
                     type="number"
@@ -166,7 +166,7 @@ function CreateEvent({ user }) {
                   <p className="text-sm text-muted-foreground">Ticket price:</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-xl font-bold text-primary-700">₹{watchedPrice || "0"}</p>
+                  <p className="text-xl font-bold text-primary-700">${watchedPrice || "0"}</p>
                 </div>
               </div>
             </div>

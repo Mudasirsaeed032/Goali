@@ -100,7 +100,7 @@ export default function EventsList() {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("en-IN", {
       style: "currency",
-      currency: "INR",
+      currency: "usd",
       minimumFractionDigits: 0,
     }).format(amount)
   }
