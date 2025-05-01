@@ -22,7 +22,7 @@ import ManageFundraisers from './Components/Admin/ManageFundraisers';
 import ManageAuctions from './Components/Admin/ManageAuctions';
 import ManageEvents from './Components/Admin/ManageEvents';
 import ManageUsers from './Components/Admin/ManageUsers';
-import FundraiserProgress from './Components/Fundraiser/FundraiserProgress';
+import AdminFundraiserProgress from './Components/Admin/AdminFundraiserProgress';
 
 
 function App() {
@@ -52,11 +52,11 @@ function App() {
         <Route path="/tickets/success" element={<TicketSuccess />} />
         <Route path="/mytickets" element={<MyTickets />} />
         <Route path="/admin" element={<RequireAdmin user={user}><AdminDashboard /></RequireAdmin>} />
-        <Route path="/admin/fundraisers" element={<RequireAdmin user={user}><ManageFundraisers /></RequireAdmin>} />
+        {/* <Route path="/admin/fundraisers" element={<RequireAdmin user={user}><ManageFundraisers /></RequireAdmin>} /> */}
         <Route path="/admin/auctions" element={<RequireAdmin user={user}><ManageAuctions /></RequireAdmin>}/>
         <Route path="/admin/events" element={<ManageEvents user={user} />} />
         <Route path="/admin/users" element={<ManageUsers user={user} />} />
-        <Route path="/fundraisers/progress" element={<FundraiserProgress />} />
+        <Route path="/admin/fundraisers" element={<AdminFundraiserProgress user={user} />} />
       </Route>
     </Routes>
   );

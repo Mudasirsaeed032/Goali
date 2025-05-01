@@ -74,6 +74,8 @@ router.delete('/admin/:id', checkAuth, requireAdmin, async (req, res) => {
     .delete()
     .eq('id', id);
 
+  console.log('Attempting to delete:', id);
+
   if (error) return res.status(500).json({ error: error.message });
 
   res.json({ message: 'Fundraiser deleted' });
