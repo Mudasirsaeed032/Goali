@@ -23,6 +23,7 @@ import ManageAuctions from './Components/Admin/ManageAuctions';
 import ManageEvents from './Components/Admin/ManageEvents';
 import ManageUsers from './Components/Admin/ManageUsers';
 import AdminFundraiserProgress from './Components/Admin/AdminFundraiserProgress';
+import FundraiserDetail from './Components/Fundraiser/FundraiserDetail';
 
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
         <Route path="/admin/events" element={<ManageEvents user={user} />} />
         <Route path="/admin/users" element={<ManageUsers user={user} />} />
         <Route path="/admin/fundraisers" element={<AdminFundraiserProgress user={user} />} />
+        <Route path="/fundraisers/:id" element={<FundraiserDetail />} />
       </Route>
     </Routes>
   );

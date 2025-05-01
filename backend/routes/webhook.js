@@ -13,15 +13,19 @@ router.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req
 
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+    console.log('✅ Stripe event received:', event.type);
   } catch (err) {
-    console.error('Webhook signature verification failed', err.message);
+    console.error('❌ Webhook signature verification failed', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
-  // ✅ Handle checkout.session.completed
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
     const metadata = session.metadata;
+
+    console.log('🔍 Session metadata:', metadata);
+    console.log('💰 Amount received (in cents):', session.amount_total);
+    console.log('🧾 Payment status:', session.payment_status);
 
     const paymentData = {
       user_id: metadata.user_id,
@@ -34,17 +38,20 @@ router.post('/webhook', bodyParser.raw({ type: 'application/json' }), async (req
       created_at: new Date().toISOString()
     };
 
+    console.log('📦 Prepared payment data:', paymentData);
+
     const { error } = await supabase.from('payments').insert([paymentData]);
 
     if (error) {
-      console.error('Error saving payment to Supabase:', error.message);
+      console.error('❌ Error saving payment to Supabase:', error.message);
       return res.status(500).json({ error: 'Failed to record payment' });
     }
 
-    console.log('✅ Payment stored in Supabase');
+    console.log('✅ Payment stored successfully in Supabase');
   }
 
   res.json({ received: true });
 });
+
 
 module.exports = router;

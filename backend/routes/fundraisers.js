@@ -2,6 +2,7 @@ const express = require('express');
 const { supabase } = require('../supabaseClient');
 const checkAuth = require('../middleware/checkAuth');
 const requireAdmin = require('../middleware/requireAdmin');
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 const router = express.Router();
 
@@ -90,49 +91,36 @@ router.post('/:id/pay', checkAuth, async (req, res) => {
     return res.status(400).json({ error: "Invalid payment amount" });
   }
 
-  // Fetch fundraiser details
-  const { data: fundraiser, error: fetchError } = await supabase
-    .from('fundraisers')
-    .select('title')
-    .eq('id', fundraiserId)
-    .single();
-
-  if (fetchError || !fundraiser) {
-    return res.status(404).json({ error: "Fundraiser not found" });
-  }
-
-  // Create Stripe Checkout session
   try {
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      line_items: [
-        {
-          price_data: {
-            currency: 'pkr',
-            product_data: {
-              name: fundraiser.title,
-            },
-            unit_amount: amount * 100, // Convert to paisa
+      line_items: [{
+        price_data: {
+          currency: 'pkr',
+          product_data: {
+            name: `Donation to Fundraiser`,
           },
-          quantity: 1,
+          unit_amount: Math.round(amount * 100), // Stripe expects amount in smallest currency unit
         },
-      ],
+        quantity: 1,
+      }],
+      success_url: `http://localhost:5173/fundraisers`,
+      cancel_url: 'http://localhost:5173/fundraisers',
       metadata: {
-        user_id: userId,
         fundraiser_id: fundraiserId,
-        amount: amount,
+        user_id: userId,
       },
-      success_url: 'http://localhost:5173/success', // adjust later
-      cancel_url: 'http://localhost:5173/failure',
     });
 
-    res.json({ url: session.url });
+    res.status(200).json({ url: session.url });
   } catch (err) {
-    console.error("Stripe error:", err.message);
+    console.error("Stripe error:", err);
     res.status(500).json({ error: "Stripe checkout failed" });
   }
+
 });
+
 
 
 router.get('/with-progress', async (req, res) => {
@@ -147,7 +135,7 @@ router.get('/with-progress', async (req, res) => {
   const { data: payments, error: paymentsError } = await supabase
     .from('payments')
     .select('fundraiser_id, amount, status')
-    .eq('status', 'paid');
+    .eq('status', 'succeeded');
 
   if (paymentsError) {
     return res.status(500).json({ error: paymentsError.message });

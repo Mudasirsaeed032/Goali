@@ -9,6 +9,8 @@ function FundraiserList() {
       .then(res => setFundraisers(res.data))
       .catch(err => console.error('Failed to fetch fundraisers', err));
   }, []);
+
+  
   const onSubmit = async ({ amount }) => {
     try {
       const res = await axios.post(
@@ -21,6 +23,7 @@ function FundraiserList() {
       alert("Stripe error: " + (err.response?.data?.error || err.message));
     }
   };
+  
 
 
   return (
@@ -43,11 +46,12 @@ function FundraiserList() {
             <p className="text-sm text-gray-600">
               Raised Rs. {f.collected_amount} of Rs. {f.goal_amount}
             </p>
-            <a href={`/fundraisers/${f.id}/donate`}>
-              <button onClick={onSubmit} className="mt-2 px-4 py-2 bg-green-600 text-white rounded">
+            <a href={`/fundraisers/${f.id}`}>
+              <button className="mt-2 px-4 py-2 bg-green-600 text-white rounded">
                 Donate
               </button>
             </a>
+
           </div>
         );
       })}
