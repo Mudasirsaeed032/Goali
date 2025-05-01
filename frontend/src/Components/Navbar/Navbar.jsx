@@ -70,9 +70,9 @@ function Navbar({ user, setUser }) {
         <div className="flex items-center">
           <Link to="/" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-              <span className="text-lg font-bold text-white">E</span>
+              <span className="text-lg font-bold text-white">G</span>
             </div>
-            <span className="hidden text-xl font-bold text-primary md:inline-block">EventHub</span>
+            <span className="hidden text-xl font-bold text-primary md:inline-block">Goali</span>
           </Link>
         </div>
 
@@ -88,9 +88,9 @@ function Navbar({ user, setUser }) {
               <div className="border-b p-4">
                 <Link to="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
                   <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-                    <span className="text-lg font-bold text-white">E</span>
+                    <span className="text-lg font-bold text-white">G</span>
                   </div>
-                  <span className="text-xl font-bold text-primary">EventHub</span>
+                  <span className="text-xl font-bold text-primary">Goali</span>
                 </Link>
               </div>
 

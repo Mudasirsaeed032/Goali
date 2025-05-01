@@ -48,9 +48,9 @@ function Layout() {
                 <div>
                   <div className="flex items-center gap-2 mb-4">
                     <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
-                      <span className="text-lg font-bold text-white">E</span>
+                      <span className="text-lg font-bold text-white">G</span>
                     </div>
-                    <span className="text-xl font-bold text-primary">EventHub</span>
+                    <span className="text-xl font-bold text-primary">Goali</span>
                   </div>
                   <p className="text-sm text-gray-500 mb-4">
                     Your one-stop platform for discovering, creating, and managing events and fundraisers.
