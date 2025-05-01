@@ -40,7 +40,7 @@ const featuredFundraisers = [
     id: 1,
     title: "Help Build a Community Garden",
     category: "Community",
-    image: "https://images.unsplash.com/photo-1498586156187-f5d7be7f5c3c?crop=entropy&cs=tinysrgb&fit=max&ixid=MXwyMDg4MnwwfDF8c2VhY2h8MXx8Y29tbXVuaXR5fGVufDB8fHx8fDE2ODU5MzQ5MjY&ixlib=rb-1.2.1&q=80&w=200",
+    image: "https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?q=80&w=1000&auto=format&fit=crop",
     raised: 8750,
     goal: 10000,
     daysLeft: 12,
@@ -51,7 +51,7 @@ const featuredFundraisers = [
     id: 2,
     title: "Medical Treatment for Alex",
     category: "Medical",
-    image: "https://images.unsplash.com/photo-1593575098770-b4578a1a214b?crop=entropy&cs=tinysrgb&fit=max&ixid=MXwyMDg4MnwwfDF8c2VhY2h8MjZ8fG1lZGljYWx8ZW58MHx8fHwxNjg1OTM0MTQ2&ixlib=rb-1.2.1&q=80&w=200",
+    image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=1000&auto=format&fit=crop",
     raised: 15200,
     goal: 25000,
     daysLeft: 8,
@@ -62,7 +62,7 @@ const featuredFundraisers = [
     id: 3,
     title: "Local School Music Program",
     category: "Education",
-    image: "https://images.unsplash.com/photo-1532614510-d3e4b1b69b04?crop=entropy&cs=tinysrgb&fit=max&ixid=MXwyMDg4MnwwfDF8c2VhY2h8Mzh8fG1pc3RpY3xlbnwwfHx8fDE2ODU5MzY0NTM&ixlib=rb-1.2.1&q=80&w=200",
+    image: "https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?q=80&w=1000&auto=format&fit=crop",
     raised: 4300,
     goal: 7500,
     daysLeft: 15,
@@ -71,12 +71,13 @@ const featuredFundraisers = [
   },
 ]
 
+// Sample data for upcoming events
 const upcomingEvents = [
   {
     id: 1,
     title: "Charity Gala Dinner",
     category: "Gala",
-    image: "https://images.unsplash.com/photo-1502760907577-21f70f4e0cc6?crop=entropy&cs=tinysrgb&fit=max&ixid=MXwyMDg4MnwwfDF8c2VhY2h8MHx8Z2FsYSUyMGRpbm5lcnxlbnwwfHx8fDE2ODU5MzYyMjg&ixlib=rb-1.2.1&q=80&w=200",
+    image: "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?q=80&w=1000&auto=format&fit=crop",
     date: "June 15, 2023",
     location: "Grand Hotel",
     price: "$75",
@@ -86,7 +87,7 @@ const upcomingEvents = [
     id: 2,
     title: "5K Run for a Cause",
     category: "Sports",
-    image: "https://images.unsplash.com/photo-1603854164339-dcc45be6d774?crop=entropy&cs=tinysrgb&fit=max&ixid=MXwyMDg4MnwwfDF8c2VhY2h8NXx8cnVuJTIwZm9yJTIwYSUyMGNhdXNlfGVufDB8fHx8fDE2ODU5MzQwOTM&ixlib=rb-1.2.1&q=80&w=200",
+    image: "https://images.unsplash.com/photo-1552674605-db6ffd4facb5?q=80&w=1000&auto=format&fit=crop",
     date: "July 8, 2023",
     location: "City Park",
     price: "$25",
@@ -96,14 +97,13 @@ const upcomingEvents = [
     id: 3,
     title: "Art Auction Night",
     category: "Arts",
-    image: "https://images.unsplash.com/photo-1597439910717-7a7c12d9d2d1?crop=entropy&cs=tinysrgb&fit=max&ixid=MXwyMDg4MnwwfDF8c2VhY2h8MXx8YXJ0JTIwYXVjdGlvbnxlbnwwfHx8fDE2ODU5MzY1Njk&ixlib=rb-1.2.1&q=80&w=200",
+    image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1000&auto=format&fit=crop",
     date: "June 22, 2023",
     location: "Modern Art Gallery",
     price: "Free Entry",
     organizer: "Artists Collective",
   },
 ]
-
 
 // Sample categories
 const categories = [
@@ -129,20 +129,20 @@ const testimonials = [
     quote: "GOALI helped me raise funds for my daughter's medical treatment in just two weeks. Forever grateful!",
     name: "Rebecca Thompson",
     role: "Parent",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1000&auto=format&fit=crop",
   },
   {
     quote: "Our school was able to fund a new computer lab thanks to the amazing support we received through GOALI.",
     name: "David Martinez",
     role: "School Principal",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1000&auto=format&fit=crop",
   },
   {
     quote:
       "The platform is so easy to use and the team provides incredible support throughout the fundraising process.",
     name: "Jennifer Lee",
     role: "Nonprofit Director",
-    avatar: "/placeholder.svg?height=40&width=40",
+    avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=1000&auto=format&fit=crop",
   },
 ]
 
@@ -246,7 +246,7 @@ function Home() {
       {/* Hero Section */}
       <section className="relative rounded-2xl overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600 via-purple-600 to-orange-500 opacity-90"></div>
-        <div className="absolute inset-0 bg-[url('/placeholder.svg?height=600&width=1200')] mix-blend-overlay opacity-20 bg-cover bg-center"></div>
+        <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1557682250-62777ba45e28?q=80&w=1000&auto=format&fit=crop')] mix-blend-overlay opacity-20 bg-cover bg-center"></div>
         <div className="container mx-auto px-4 py-12 md:py-16 lg:py-20">
           <div className="grid md:grid-cols-2 gap-8 items-center relative z-10">
             <div className="space-y-6">
@@ -262,7 +262,7 @@ function Home() {
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
                 <Button asChild size="lg" className="bg-white text-blue-600 hover:bg-white/90">
-                  <Link to="/fundraisers/create">
+                  <Link to="/start-fundraiser">
                     Start a Fundraiser
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Link>
@@ -275,7 +275,7 @@ function Home() {
             <div className="relative hidden md:block">
               <div className="rounded-full overflow-hidden h-80 w-80 ml-auto border-4 border-white/20 shadow-2xl">
                 <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/WhatsApp%20Image%202025-04-21%20at%2001.07.17_f4ccd9f9.jpg-HOfvxOVHtp4lYzKVCoLheAPmdorOE0.jpeg"
+                  src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1000&auto=format&fit=crop"
                   alt="Mountain landscape with purple hues"
                   className="object-cover w-full h-full"
                 />
@@ -624,7 +624,7 @@ function Home() {
               </div>
               <div className="hidden md:block">
                 <img
-                  src="/placeholder.svg?height=250&width=350"
+                  src="https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=1000&auto=format&fit=crop"
                   alt="People celebrating success"
                   className="rounded-lg"
                 />
