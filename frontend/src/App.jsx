@@ -10,7 +10,7 @@ import Layout from './Components/Layout/Layout';
 import Navbar from './Components/Navbar/Navbar';
 import CreateFundraiser from './Components/Fundraiser/CreateFundraiser';
 import FundraiserList from './Components/Fundraiser/FundraiserList';
-import CreateAuctionItem from './Components/AuctionItem/CreateAuctionItem';
+import CreateAuctionItem from './Components/Auction/CreateAuctionItem';
 import AuctionDetail from './Components/Auction/AuctionDetail';
 import CreateEvent from './Components/Events/CreateEvent';
 import EventsList from './Components/Events/EventsList';
