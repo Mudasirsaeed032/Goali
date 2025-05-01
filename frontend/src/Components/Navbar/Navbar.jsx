@@ -1,9 +1,9 @@
 "use client"
 
-import { Link, useNavigate } from "react-router-dom"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import axios from "axios"
-import { LogOut, Menu, Home, DollarSign, ShieldCheck } from "lucide-react"
-
+import { LogOut, Menu, Home, DollarSign, ShieldCheck, Ticket, CalendarDays, User, ChevronDown } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import {
@@ -21,14 +21,26 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import {Link} from "react-router-dom" // Assuming this is the correct import for your setup
+
+// Define the theme colors
+const theme = {
+  primary: "#122ee5",
+  secondary: "#eb7521",
+}
 
 function Navbar({ user, setUser }) {
   const navigate = useNavigate()
+  const [isOpen, setIsOpen] = useState(false)
 
   const handleLogout = async () => {
-    await axios.post("http://localhost:5000/auth/logout", {}, { withCredentials: true })
-    setUser(null)
-    navigate("/login")
+    try {
+      await axios.post("http://localhost:5000/auth/logout", {}, { withCredentials: true })
+      setUser(null)
+      navigate("/login")
+    } catch (error) {
+      console.error("Logout failed:", error)
+    }
   }
 
   const getUserInitials = () => {
@@ -40,131 +52,233 @@ function Navbar({ user, setUser }) {
       .toUpperCase()
   }
 
+  const NavLink = ({ to, icon: Icon, children, onClick }) => (
+    <Link
+      to={to}
+      className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary"
+      onClick={onClick}
+    >
+      {Icon && <Icon className="h-4 w-4 text-muted-foreground group-hover:text-primary" />}
+      <span>{children}</span>
+    </Link>
+  )
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/80 backdrop-blur-md">
-      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-8">
+    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur-lg shadow-sm">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4 md:px-6">
+        {/* Logo/Brand */}
+        <div className="flex items-center">
+          <Link to="/" className="flex items-center gap-2">
+            <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
+              <span className="text-lg font-bold text-white">E</span>
+            </div>
+            <span className="hidden text-xl font-bold text-primary md:inline-block">EventHub</span>
+          </Link>
+        </div>
+
         {/* Mobile Navigation */}
-        <Sheet>
+        <Sheet open={isOpen} onOpenChange={setIsOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="md:hidden">
+            <Button variant="ghost" size="icon" className="md:hidden" aria-label="Menu">
               <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle navigation menu</span>
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-64 p-6">
-            <nav className="flex flex-col gap-4">
-              <Link to="/" className="flex items-center gap-2 text-lg font-medium">
-                <Home className="h-5 w-5" />
-                Home
-              </Link>
-              <Link to="/fundraisers" className="flex items-center gap-2 text-lg font-medium">
-                <DollarSign className="h-5 w-5" />
-                Fundraisers
-              </Link>
-              {user?.role === "admin" && (
-                <Link to="/makeadmin" className="flex items-center gap-2 text-lg font-medium">
-                  <ShieldCheck className="h-5 w-5" />
-                  Make Admin
+          <SheetContent side="left" className="w-72 p-0">
+            <div className="flex flex-col h-full">
+              <div className="border-b p-4">
+                <Link to="/" className="flex items-center gap-2" onClick={() => setIsOpen(false)}>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-md bg-primary">
+                    <span className="text-lg font-bold text-white">E</span>
+                  </div>
+                  <span className="text-xl font-bold text-primary">EventHub</span>
                 </Link>
-              )}
-              <div className="border-t pt-4 mt-4">
+              </div>
+
+              <nav className="flex-1 overflow-auto p-4">
+                <div className="space-y-1">
+                  <NavLink to="/" icon={Home} onClick={() => setIsOpen(false)}>
+                    Home
+                  </NavLink>
+                  <NavLink to="/fundraisers" icon={DollarSign} onClick={() => setIsOpen(false)}>
+                    Fundraisers
+                  </NavLink>
+                  <NavLink to="/events" icon={CalendarDays} onClick={() => setIsOpen(false)}>
+                    Events
+                  </NavLink>
+                  <NavLink to="/mytickets" icon={Ticket} onClick={() => setIsOpen(false)}>
+                    My Tickets
+                  </NavLink>
+
+                  {/* Admin Section */}
+                  {user?.role === "admin" && (
+                    <>
+                      <div className="my-2 border-t pt-2">
+                        <p className="px-3 text-xs font-semibold uppercase text-muted-foreground">Admin</p>
+                      </div>
+                      <NavLink to="/admin" icon={ShieldCheck} onClick={() => setIsOpen(false)}>
+                        Admin Dashboard
+                      </NavLink>
+                      <NavLink to="/makeadmin" icon={ShieldCheck} onClick={() => setIsOpen(false)}>
+                        Make Admin
+                      </NavLink>
+                    </>
+                  )}
+                </div>
+              </nav>
+
+              <div className="border-t p-4">
                 {user ? (
-                  <>
-                    <div className="flex items-center gap-3 mb-3">
-                      <Avatar className="h-8 w-8">
-                        <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-9 w-9 border-2 border-primary/20">
+                        <AvatarFallback className="bg-primary/10 text-primary">{getUserInitials()}</AvatarFallback>
                       </Avatar>
-                      <span>{user.full_name}</span>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">{user.full_name}</span>
+                        <span className="text-xs text-muted-foreground">{user.email}</span>
+                      </div>
                     </div>
-                    <Button variant="destructive" onClick={handleLogout} className="w-full">
-                      <LogOut className="h-4 w-4 mr-2" />
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        handleLogout()
+                        setIsOpen(false)
+                      }}
+                      className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
                       Logout
                     </Button>
-                  </>
+                  </div>
                 ) : (
-                  <>
-                    <Button variant="outline" onClick={() => navigate("/login")} className="w-full">
+                  <div className="flex flex-col gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        navigate("/login")
+                        setIsOpen(false)
+                      }}
+                      className="w-full justify-start"
+                    >
+                      <User className="mr-2 h-4 w-4" />
                       Login
                     </Button>
-                    <Button onClick={() => navigate("/signup")} className="w-full">
+                    <Button
+                      onClick={() => {
+                        navigate("/signup")
+                        setIsOpen(false)
+                      }}
+                      className="w-full justify-start bg-primary hover:bg-primary/90"
+                    >
                       Sign Up
                     </Button>
-                  </>
+                  </div>
                 )}
               </div>
-            </nav>
+            </div>
           </SheetContent>
         </Sheet>
 
         {/* Desktop Navigation */}
-        <div className="hidden md:flex gap-6 items-center">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/" className="nav-link flex items-center">
-                    <Home className="mr-2 h-4 w-4" />
-                    Home
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
+        <NavigationMenu className="hidden md:flex">
+          <NavigationMenuList className="flex gap-1">
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/"
+                  className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary"
+                >
+                  <Home className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                  Home
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
 
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/fundraisers" className="nav-link flex items-center">
-                    <DollarSign className="mr-2 h-4 w-4" />
-                    Fundraisers
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/mytickets" className="nav-link flex items-center">
-                    My Tickets
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <Link to="/events" className="nav-link flex items-center">
-                    Events
-                  </Link>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/fundraisers"
+                  className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary"
+                >
+                  <DollarSign className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                  Fundraisers
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
 
-              {user?.role === "admin" && (
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link to="/makeadmin" className="nav-link flex items-center">
-                      <ShieldCheck className="mr-2 h-4 w-4" />
-                      Make Admin
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              )}
-              {user?.role === "admin" && (
-                <NavigationMenuItem>
-                  <NavigationMenuLink asChild>
-                    <Link to="/admin" className="nav-link flex items-center">
-                      <ShieldCheck className="mr-2 h-4 w-4" />
-                      Admin Dashboard
-                    </Link>
-                  </NavigationMenuLink>
-                </NavigationMenuItem>
-              )}
-            </NavigationMenuList>
-          </NavigationMenu>
-        </div>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/events"
+                  className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary"
+                >
+                  <CalendarDays className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                  Events
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link
+                  to="/mytickets"
+                  className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary"
+                >
+                  <Ticket className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                  My Tickets
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
+
+            {/* Admin Section - Visible only to admin */}
+            {user?.role === "admin" && (
+              <NavigationMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      className="group flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-primary/10 hover:text-primary"
+                    >
+                      <ShieldCheck className="h-4 w-4 text-muted-foreground group-hover:text-primary" />
+                      Admin
+                      <ChevronDown className="h-3 w-3 text-muted-foreground group-hover:text-primary" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48">
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="flex items-center">
+                        <ShieldCheck className="mr-2 h-4 w-4" />
+                        Admin Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/makeadmin" className="flex items-center">
+                        <ShieldCheck className="mr-2 h-4 w-4" />
+                        Make Admin
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </NavigationMenuItem>
+            )}
+          </NavigationMenuList>
+        </NavigationMenu>
 
         {/* Auth Controls */}
         <div className="flex items-center gap-2">
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar className="h-8 w-8">
-                    <AvatarFallback>{getUserInitials()}</AvatarFallback>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-2 rounded-full px-2 hover:bg-primary/10"
+                >
+                  <Avatar className="h-8 w-8 border-2 border-primary/20">
+                    <AvatarFallback className="bg-primary/10 text-primary">{getUserInitials()}</AvatarFallback>
                   </Avatar>
+                  <span className="hidden text-sm font-medium md:inline-block">{user.full_name?.split(" ")[0]}</span>
+                  <ChevronDown className="h-3 w-3 text-muted-foreground" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-56">
@@ -175,10 +289,20 @@ function Navbar({ user, setUser }) {
                   </div>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={handleLogout}
-                >
+                <DropdownMenuItem asChild>
+                  <Link to="/profile" className="flex items-center">
+                    <User className="mr-2 h-4 w-4" />
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/mytickets" className="flex items-center">
+                    <Ticket className="mr-2 h-4 w-4" />
+                    My Tickets
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem className="text-destructive focus:text-destructive" onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Log out
                 </DropdownMenuItem>
@@ -186,10 +310,10 @@ function Navbar({ user, setUser }) {
             </DropdownMenu>
           ) : (
             <>
-              <Button variant="ghost" onClick={() => navigate("/login")}>
+              <Button variant="ghost" onClick={() => navigate("/login")} className="hidden sm:flex">
                 Login
               </Button>
-              <Button onClick={() => navigate("/signup")}>
+              <Button onClick={() => navigate("/signup")} className="bg-primary hover:bg-primary/90">
                 Sign Up
               </Button>
             </>
