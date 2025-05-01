@@ -18,18 +18,35 @@ router.get('/admin', checkAuth, requireAdmin, async (req, res) => {
   res.json(data);
 });
 
-// 🔐 DELETE /admin/events/:id
+// DELETE /admin/:id - Delete event and its tickets manually
 router.delete('/admin/:id', checkAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
 
-  const { error } = await supabase
-    .from('events')
-    .delete()
-    .eq('id', id);
+  try {
+    // Step 1: Delete all tickets for this event
+    const { error: ticketDeleteError } = await supabase
+      .from('tickets')
+      .delete()
+      .eq('event_id', id);
 
-  if (error) return res.status(500).json({ error: error.message });
-  res.json({ message: 'Event deleted successfully' });
+    if (ticketDeleteError) throw new Error("Failed to delete related tickets: " + ticketDeleteError.message);
+
+    // Step 2: Delete the event itself
+    const { error: eventDeleteError } = await supabase
+      .from('events')
+      .delete()
+      .eq('id', id);
+
+    if (eventDeleteError) throw new Error("Failed to delete event: " + eventDeleteError.message);
+
+    res.status(200).json({ message: "Event and related tickets deleted successfully" });
+  } catch (err) {
+    console.error("Delete failed:", err.message);
+    res.status(500).json({ error: err.message });
+  }
 });
+
+
 
 router.post('/', checkAuth, async (req, res) => {
   const { title, description, price, location } = req.body;

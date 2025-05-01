@@ -19,15 +19,23 @@ function ManageEvents() {
     if (!window.confirm("Delete this event?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/events/admin/${id}`, {
+      const res = await axios.delete(`http://localhost:5000/events/admin/${id}`, {
         withCredentials: true,
       });
-      setEvents((prev) => prev.filter((event) => event.id !== id));
+
+      if (res.status === 200) {
+        setEvents(prev => prev.filter(event => event.id !== id));
+      } else {
+        console.error("Unexpected status code:", res.status);
+        alert("Failed to delete event");
+      }
     } catch (err) {
-      console.error("Delete failed", err);
+      console.error("Delete failed:", err.response?.data || err.message);
       alert("Could not delete event");
     }
   };
+
+
 
   useEffect(() => {
     fetchEvents();

@@ -9,6 +9,19 @@ function FundraiserList() {
       .then(res => setFundraisers(res.data))
       .catch(err => console.error('Failed to fetch fundraisers', err));
   }, []);
+  const onSubmit = async ({ amount }) => {
+    try {
+      const res = await axios.post(
+        `http://localhost:5000/fundraisers/${id}/pay`,
+        { amount },
+        { withCredentials: true }
+      );
+      window.location.href = res.data.url; // Redirect to Stripe
+    } catch (err) {
+      alert("Stripe error: " + (err.response?.data?.error || err.message));
+    }
+  };
+
 
   return (
     <div className="max-w-4xl mx-auto p-6">
@@ -31,7 +44,7 @@ function FundraiserList() {
               Raised Rs. {f.collected_amount} of Rs. {f.goal_amount}
             </p>
             <a href={`/fundraisers/${f.id}/donate`}>
-              <button className="mt-2 px-4 py-2 bg-green-600 text-white rounded">
+              <button onClick={onSubmit} className="mt-2 px-4 py-2 bg-green-600 text-white rounded">
                 Donate
               </button>
             </a>
