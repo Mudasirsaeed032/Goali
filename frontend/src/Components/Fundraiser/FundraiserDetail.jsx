@@ -1,80 +1,83 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import axios from "axios"
-import { useForm } from "react-hook-form"
-import { ArrowLeft, Clock, Users, AlertCircle, Loader2 } from "lucide-react"
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { ArrowLeft, Clock, Users, AlertCircle, Loader2 } from "lucide-react";
 
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Progress } from "@/components/ui/progress"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Separator } from "@/components/ui/separator"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Skeleton } from "@/components/ui/skeleton"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Separator } from "@/components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 
 function FundraiserDetail() {
-  const { id } = useParams()
-  const [fundraiser, setFundraiser] = useState(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const { id } = useParams();
+  const [fundraiser, setFundraiser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm()
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     axios
       .get("http://localhost:5000/fundraisers/with-progress")
       .then((res) => {
-        const found = res.data.find((f) => f.id === id)
+        const found = res.data.find((f) => f.id === id);
         if (found) {
-          // Add some sample data if it doesn't exist
           const enhancedData = {
             ...found,
             category: found.category || "medical",
             supporters: found.supporters || Math.floor(Math.random() * 100) + 5,
             days_left: found.days_left || Math.floor(Math.random() * 30) + 1,
-          }
-          setFundraiser(enhancedData)
+          };
+          setFundraiser(enhancedData);
         } else {
-          setError("Fundraiser not found")
+          setError("Fundraiser not found");
         }
-        setLoading(false)
+        setLoading(false);
       })
       .catch((err) => {
-        console.error("Error fetching fundraiser", err)
-        setError("Failed to load fundraiser details. Please try again later.")
-        setLoading(false)
-      })
-  }, [id])
+        console.error("Error fetching fundraiser", err);
+        setError("Failed to load fundraiser details. Please try again later.");
+        setLoading(false);
+      });
+  }, [id]);
 
   const onSubmit = async ({ amount }) => {
     try {
-      setIsSubmitting(true)
-      const res = await axios.post(`http://localhost:5000/fundraisers/${id}/pay`, { amount }, { withCredentials: true })
-      window.location.href = res.data.url // Redirect to Stripe
+      setIsSubmitting(true);
+
+      // Ensure the amount is in USD and not less than $0.50
+      if (amount < 0.50) {
+        alert('The minimum donation is $0.50 USD');
+        setIsSubmitting(false);
+        return;
+      }
+
+      const res = await axios.post(`http://localhost:5000/fundraisers/${id}/pay`, { amount }, { withCredentials: true });
+      window.location.href = res.data.url; // Redirect to Stripe Checkout
     } catch (err) {
-      alert("Stripe error: " + (err.response?.data?.error || err.message))
-      setIsSubmitting(false)
+      alert("Stripe error: " + (err.response?.data?.error || err.message));
+      setIsSubmitting(false);
     }
-  }
+  };
 
   // Format currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-IN", {
+    return new Intl.NumberFormat("en-US", {
       style: "currency",
-      currency: "usd",
+      currency: "USD",
       maximumFractionDigits: 0,
-    }).format(amount)
-  }
+    }).format(amount);
+  };
 
   // Render loading skeleton
   if (loading) {
@@ -90,7 +93,7 @@ function FundraiserDetail() {
         </div>
         <Skeleton className="h-12 w-full rounded-lg" />
       </div>
-    )
+    );
   }
 
   // Render error state
@@ -106,12 +109,12 @@ function FundraiserDetail() {
           <Button onClick={() => window.location.reload()}>Try Again</Button>
         </div>
       </div>
-    )
+    );
   }
 
-  if (!fundraiser) return null
+  if (!fundraiser) return null;
 
-  const percent = Math.min((fundraiser.collected_amount / fundraiser.goal_amount) * 100, 100)
+  const percent = Math.min((fundraiser.collected_amount / fundraiser.goal_amount) * 100, 100);
 
   return (
     <div className="max-w-3xl mx-auto p-6">
@@ -119,10 +122,7 @@ function FundraiserDetail() {
         {/* Header with image */}
         <div className="relative h-64 overflow-hidden">
           <img
-            src={
-              fundraiser.image_url ||
-              "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=1000&auto=format&fit=crop"
-            }
+            src={fundraiser.image_url || "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=1000&auto=format&fit=crop"}
             className="w-full h-full object-cover"
             alt="Fundraiser"
           />
@@ -179,8 +179,8 @@ function FundraiserDetail() {
                     required: "Amount is required",
                     valueAsNumber: true,
                     min: {
-                      value: 1,
-                      message: "Amount must be at least ₹1",
+                      value: 0.5,
+                      message: "Amount must be at least $0.50 USD",
                     },
                   })}
                 />
@@ -217,7 +217,7 @@ function FundraiserDetail() {
         </CardFooter>
       </Card>
     </div>
-  )
+  );
 }
 
-export default FundraiserDetail
+export default FundraiserDetail;
