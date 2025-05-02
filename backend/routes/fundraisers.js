@@ -84,7 +84,7 @@ router.delete('/admin/:id', checkAuth, requireAdmin, async (req, res) => {
 
 router.post('/:id/pay', checkAuth, async (req, res) => {
   const { id: fundraiserId } = req.params;
-  const { amount } = req.body;
+  const { amount } = req.body;  // Amount should be in USD
   const userId = req.user.id;
 
   if (!amount || amount <= 0) {
@@ -92,16 +92,17 @@ router.post('/:id/pay', checkAuth, async (req, res) => {
   }
 
   try {
+    // Create Stripe checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: [{
         price_data: {
-          currency: 'pkr',
+          currency: 'usd',
           product_data: {
             name: `Donation to Fundraiser`,
           },
-          unit_amount: Math.round(amount * 100), // Stripe expects amount in smallest currency unit
+          unit_amount: Math.round(amount * 100), // Stripe expects amount in smallest currency unit (cents)
         },
         quantity: 1,
       }],
@@ -113,13 +114,30 @@ router.post('/:id/pay', checkAuth, async (req, res) => {
       },
     });
 
+    // Store the payment information in the database
+    const { data, error } = await supabase
+      .from('payments')
+      .insert([{
+        user_id: userId,
+        fundraiser_id: fundraiserId,
+        amount: amount, // Store the donation amount
+        method: 'stripe', // Payment method (could be 'stripe' or other methods)
+        status: 'succeeded', // Status (you may update this after confirming payment)
+        created_at: new Date().toISOString(),
+      }]);
+
+    if (error) {
+      console.error('Error storing payment data:', error.message);
+      return res.status(500).json({ error: 'Failed to store payment data' });
+    }
+
     res.status(200).json({ url: session.url });
   } catch (err) {
     console.error("Stripe error:", err);
     res.status(500).json({ error: "Stripe checkout failed" });
   }
-
 });
+
 
 
 

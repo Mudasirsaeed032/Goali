@@ -1,4 +1,4 @@
-"use client";
+"use client"
 
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -23,7 +23,11 @@ function FundraiserDetail() {
   const [error, setError] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
 
   useEffect(() => {
     setLoading(true);
@@ -32,13 +36,7 @@ function FundraiserDetail() {
       .then((res) => {
         const found = res.data.find((f) => f.id === id);
         if (found) {
-          const enhancedData = {
-            ...found,
-            category: found.category || "medical",
-            supporters: found.supporters || Math.floor(Math.random() * 100) + 5,
-            days_left: found.days_left || Math.floor(Math.random() * 30) + 1,
-          };
-          setFundraiser(enhancedData);
+          setFundraiser(found);
         } else {
           setError("Fundraiser not found");
         }
@@ -54,32 +52,22 @@ function FundraiserDetail() {
   const onSubmit = async ({ amount }) => {
     try {
       setIsSubmitting(true);
-
-      // Ensure the amount is in USD and not less than $0.50
-      if (amount < 0.50) {
-        alert('The minimum donation is $0.50 USD');
-        setIsSubmitting(false);
-        return;
-      }
-
       const res = await axios.post(`http://localhost:5000/fundraisers/${id}/pay`, { amount }, { withCredentials: true });
-      window.location.href = res.data.url; // Redirect to Stripe Checkout
+      window.location.href = res.data.url; // Redirect to Stripe
     } catch (err) {
       alert("Stripe error: " + (err.response?.data?.error || err.message));
       setIsSubmitting(false);
     }
   };
 
-  // Format currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat("en-US", {
+    return new Intl.NumberFormat("en-IN", {
       style: "currency",
-      currency: "USD",
+      currency: "usd",
       maximumFractionDigits: 0,
     }).format(amount);
   };
 
-  // Render loading skeleton
   if (loading) {
     return (
       <div className="max-w-3xl mx-auto p-6 space-y-6">
@@ -96,7 +84,6 @@ function FundraiserDetail() {
     );
   }
 
-  // Render error state
   if (error) {
     return (
       <div className="max-w-3xl mx-auto p-6">
@@ -119,7 +106,6 @@ function FundraiserDetail() {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <Card className="overflow-hidden border-none shadow-lg">
-        {/* Header with image */}
         <div className="relative h-64 overflow-hidden">
           <img
             src={fundraiser.image_url || "https://images.unsplash.com/photo-1532629345422-7515f3d16bb6?q=80&w=1000&auto=format&fit=crop"}
@@ -127,9 +113,7 @@ function FundraiserDetail() {
             alt="Fundraiser"
           />
           <div className="absolute top-4 left-4">
-            <Badge className="capitalize bg-white/80 text-primary hover:bg-white/70">
-              {fundraiser.category || "Fundraiser"}
-            </Badge>
+            <Badge className="capitalize bg-white/80 text-primary hover:bg-white/70">{fundraiser.category || "Fundraiser"}</Badge>
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
         </div>
@@ -149,10 +133,8 @@ function FundraiserDetail() {
         </CardHeader>
 
         <CardContent className="space-y-6">
-          {/* Description */}
           <p className="text-base leading-relaxed">{fundraiser.description}</p>
 
-          {/* Progress */}
           <div className="space-y-2 bg-muted/30 p-4 rounded-lg">
             <div className="flex justify-between text-sm">
               <span className="font-medium">{formatCurrency(fundraiser.collected_amount)}</span>
@@ -164,12 +146,11 @@ function FundraiserDetail() {
 
           <Separator />
 
-          {/* Donation Form */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Make a Donation</h3>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="amount">Donation Amount ($)</Label>
+                <Label htmlFor="amount">Donation Amount (USD)</Label>
                 <Input
                   id="amount"
                   type="number"
@@ -179,8 +160,8 @@ function FundraiserDetail() {
                     required: "Amount is required",
                     valueAsNumber: true,
                     min: {
-                      value: 0.5,
-                      message: "Amount must be at least $0.50 USD",
+                      value: 1,
+                      message: "Amount must be at least $1",
                     },
                   })}
                 />
