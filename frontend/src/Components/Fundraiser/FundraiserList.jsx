@@ -202,7 +202,7 @@ function FundraiserList() {
           <p className="text-muted-foreground mt-1">Support causes that matter to you</p>
         </div>
         <Button asChild className="bg-gradient-to-r from-blue-600 to-purple-600">
-          <Link to="/start-fundraiser">
+          <Link to="/fundraisers/create">
             Start a Fundraiser
             <ChevronRight className="ml-1 h-4 w-4" />
           </Link>
